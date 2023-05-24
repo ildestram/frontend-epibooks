@@ -4,7 +4,7 @@ import { Outlet, useNavigate } from "react-router-dom";
 
 const useAuth = () => {
   const session = JSON.parse(localStorage.getItem("loggedIn"));
-  if (session && session.email && session.email.length > 0) {
+  if (session && session.payload.email && session.payload.email.length > 0) {
     return true;
   }
   return false;

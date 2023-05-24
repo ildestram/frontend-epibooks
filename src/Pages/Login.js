@@ -3,37 +3,26 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  loginLoading,
+  loginResponse,
+  loginRequest,
+} from "../Reducers/loginSlice";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
+
   const navigate = useNavigate();
-  useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("loggedIn"));
-    console.log(user);
-    if (user && user.email && user.email.length > 0) {
-      navigate("../homepage", { replace: true });
-    }
-  }, [navigate]);
+  const dispatch = useDispatch();
+  const isLoading = useSelector(loginLoading);
+  const response = useSelector(loginResponse);
+
   const post = async (e) => {
     e.preventDefault();
-    try {
-      const req = await fetch("http://localhost:5050/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      if (req.status === 200) {
-        const user = await req.json();
-        console.log("Utente loggato", user);
-      } else {
-        const error = await req.json();
-        console.log("Errore", error.message);
-      }
-    } catch (error) {
-      console.log("Error", error);
-    }
+    dispatch(loginRequest(formData)).then(() => {
+      navigate("/users");
+    });
   };
 
   const handleInputChange = (e) => {
